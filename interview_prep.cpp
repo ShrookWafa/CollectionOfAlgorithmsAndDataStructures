@@ -7,9 +7,9 @@ using namespace std;
 
 struct node
 {
-	int data;
-	node *next;
-	node *prev;
+    int data;
+    node *next;
+    node *prev;
 };
 
 template <typename K> class list
@@ -131,15 +131,11 @@ int main()
 	obj.createnode(40);
 	obj.display_backwards();
 	obj.createnode(55);
-	obj.display_backwards();
 	obj.insert_start(50);
-	obj.display_backwards();
 	obj.insert_position(5,60);
 	obj.display_backwards();
 	obj.delete_first();
-	obj.display_backwards();
 	obj.delete_last();
-	obj.display_backwards();
 	obj.delete_position(4);
 	obj.display_backwards();
 
@@ -249,7 +245,7 @@ void countSort(int arr[], int n, int exp){
         arr[i] = output[i];
 }
 
-void radixsort(int arr[], int n) {
+void radixsort(int arr[], int n) { // O(nk) k = log10(max)
     int m = getMax(arr, n);
     for (int exp = 1; m/exp > 0; exp *= 10)
         countSort(arr, n, exp);
