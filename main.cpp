@@ -5,7 +5,7 @@ cout.tie(0);
 
 // Manual compare function for sorting
 bool comp(pair<int, int> p1, pair<int, int> p2){
-    // Whatever the condition is, if it's true, p1 comes before p2
+    // When p2 should come before p1 in the output
     if(p1.second < p2.second) // Don't use <=
         return 0;
     return 1;
