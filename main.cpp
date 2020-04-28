@@ -60,7 +60,7 @@ void Binary_Search(int A[], int v){
     int high = A.length();
     while(low<=high){
         int mid=(low+high)/2;
-        if(v=A[mid])
+        if(v==A[mid])
             return mid;
         if(v>A[mid])
             low=mid+1;
@@ -1004,3 +1004,148 @@ int eval(string s){
 
     return to_int(tok.c_str()); // Return the value...
 }
+
+
+/*********STRINGS*************/
+
+//TRIE
+struct TrieNode
+{
+    struct TrieNode *children[ALPHABET_SIZE];
+    bool isEndOfWord;
+};
+
+struct TrieNode *getNode(void)
+{
+    struct TrieNode *pNode =  new TrieNode;
+
+    pNode->isEndOfWord = false;
+
+    for (int i = 0; i < ALPHABET_SIZE; i++)
+        pNode->children[i] = NULL;
+
+    return pNode;
+}
+
+void insert(struct TrieNode *root, string key)
+{
+    struct TrieNode *pCrawl = root;
+
+    for (int i = 0; i < key.length(); i++)
+    {
+        int index = key[i] - 'a';
+        if (!pCrawl->children[index])
+            pCrawl->children[index] = getNode();
+
+        pCrawl = pCrawl->children[index];
+    }
+
+    pCrawl->isEndOfWord = true;
+}
+
+bool search(struct TrieNode *root, string key)
+{
+    struct TrieNode *pCrawl = root;
+
+    for (int i = 0; i < key.length(); i++)
+    {
+        int index = key[i] - 'a';
+        if (!pCrawl->children[index])
+            return false;
+
+        pCrawl = pCrawl->children[index];
+    }
+
+    return (pCrawl != NULL && pCrawl->isEndOfWord);
+}
+
+
+
+// KMP
+
+void KMPSearch(char* pat, char* txt)
+{
+    int M = strlen(pat);
+    int N = strlen(txt);
+
+    int lps[M];
+    computeLPSArray(pat, M, lps);
+
+    int i = 0;
+    int j = 0;
+    while (i < N) {
+        if (pat[j] == txt[i]) {
+            j++;
+            i++;
+        }
+
+        if (j == M) {
+            printf("Found pattern at index %d ", i - j);
+            j = lps[j - 1];
+        }
+
+        else if (i < N && pat[j] != txt[i]) {
+            if (j != 0)
+                j = lps[j - 1];
+            else
+                i = i + 1;
+        }
+    }
+}
+
+void computeLPSArray(char* pat, int M, int* lps)
+{
+    int len = 0;
+    lps[0] = 0;
+    int i = 1;
+    while (i < M) {
+        if (pat[i] == pat[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        }
+        else
+        {
+            if (len != 0) {
+                len = lps[len - 1];
+            }
+            else
+            {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+}
+
+// Manacher's, Find longest palindrome in a string in O(n)
+// P contains length of palindrome for center i
+// for extended string with # between characters
+vector<int> getLongestPalindrome(string s){
+    string T = "";
+    for(int i=0; i<s.length(); i++){
+        T += s[i];
+        T += '#';
+    }
+    T = "#" + T;
+    vector<int> P(T.length(), 0);
+
+    int C = 0, R = -1, rad;
+    for (int i = 0; i < T.length(); ++i) {
+        if (i <= R) {
+            rad = min(P[2*C-i], R-i);
+        } else {
+            rad = 0;
+        }
+        while (i+rad < T.length() && i-rad >= 0 && T[i-rad] == T[i+rad]) {
+            rad++;
+        }
+        P[i] = rad;
+        if (i + rad - 1 > R) {
+            C = i;
+            R = i + rad - 1;
+        }
+    }
+    return P;
+}
+
